@@ -1,30 +1,13 @@
-alert("Hello Tester! \nThis page should fullfill the technical requirements of the assignment but if you want to see a better example please click the link in the top left");
-
 // Assignment Code
 let generateBtn = document.querySelector("#generate");
+let lengthInput = document.querySelector("#passwordLength");
+let upperCaseCB = document.querySelector("#upperCaseCB");
+let lowerCaseCB = document.querySelector("#lowerCaseCB");
 
 
 // Write password to the #password input
 function writePassword() {
-  //Loop through prompt until user input is validated
-  let checkValid = false;
-  let passwordLength;
-  do {
-    passwordLength = prompt("Enter password length (8-128):");
-    if(passwordLength === null){
-      return;
-    }
-    if (isNaN(passwordLength)){
-      alert("Value not recognized");
-    } else {
-      if(passwordLength < 8 || passwordLength > 128){
-        alert("Value out of range");
-      } else {
-        checkValid = true;
-      }
-    }
-  } while (!checkValid);
-  //Prompt user for character options
+  let passwordLength = document.querySelector("#passwordLength").value;
   let options = getOptions();
   let password = generatePassword(passwordLength,options);
   let passwordText = document.querySelector("#password");
@@ -35,18 +18,16 @@ function writePassword() {
 //Gets character options from user input and returns an array of methods for generating that character type
 function getOptions(){
   let options = [];
-  if(confirm("Include Uppercase characters?")){
+  if(document.querySelector("#upperCaseCB").checked){
     options.push({getCharacter: getUpperCase});
-    if(confirm("Include Lowercase characters?")){
-      options.push({getCharacter: getLowerCase});
-    }
-  } else { //If Uppercase characters are not included lowercase characters MUST be included (At least that is how I understood the instructions)
+  }
+  if(document.querySelector("#lowerCaseCB").checked){
     options.push({getCharacter: getLowerCase});
   }
-  if(confirm("Include numbers?")){
+  if(document.querySelector("#numbersCB").checked){
     options.push({getCharacter: getNumber});
   }
-  if(confirm("Include special characters?")){
+  if(document.querySelector("#specialsCB").checked){
     options.push({getCharacter: getSpecial});
   }
   return options
@@ -87,3 +68,27 @@ function getSpecial(){
 
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
+
+//Add event listener to password length input to resirict values to 8-128
+lengthInput.onchange = function () {
+  if (this.value > 128){
+    this.value = 128;
+  }
+  if (this.value < 8){
+    this.value = 8;
+  }
+}
+
+//Adds event listener to ensure upper or lower case check box is always checked
+upperCaseCB.onchange = function () {
+  if (!this.checked){
+    lowerCaseCB.checked = true;
+  }
+}
+
+//Adds event listener to ensure upper or lower case check box is always checked
+lowerCaseCB.onchange = function () {
+  if (!this.checked){
+    upperCaseCB.checked = true;
+  }
+}
