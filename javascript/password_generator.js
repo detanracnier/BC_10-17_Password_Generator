@@ -61,15 +61,13 @@ function getNumber(){
 
 //Generates a random special character
 function getSpecial(){
-  let specailList = "!@#$%&*";
-  let special = specailList.charAt(Math.floor(Math.random()*specailList.length));
-  return special
+  return String.fromCharCode(Math.floor((Math.random()*16)+32))
 }
 
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
 
-//Add event listener to password length input to resirict values to 8-128
+//Add event listener to password length input to restrict values to 8-128
 lengthInput.onchange = function () {
   if (this.value > 128){
     this.value = 128;
