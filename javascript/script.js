@@ -26,10 +26,14 @@ function writePassword() {
   } while (!checkValid);
   //Prompt user for character options
   let options = getOptions();
-  let password = generatePassword(passwordLength,options);
-  let passwordText = document.querySelector("#password");
+  if(options!=[]){
+    let password = generatePassword(passwordLength,options);
+    let passwordText = document.querySelector("#password");
 
-  passwordText.value = password;
+    passwordText.value = password;
+  } else {
+    alert("Please select a character option");
+  }
 }
 
 //Gets character options from user input and returns an array of methods for generating that character type
@@ -37,10 +41,8 @@ function getOptions(){
   let options = [];
   if(confirm("Include Uppercase characters?")){
     options.push({getCharacter: getUpperCase});
-    if(confirm("Include Lowercase characters?")){
-      options.push({getCharacter: getLowerCase});
-    }
-  } else { //If Uppercase characters are not included lowercase characters MUST be included (At least that is how I understood the instructions)
+  }
+  if(confirm("Include Lowercase characters?")){
     options.push({getCharacter: getLowerCase});
   }
   if(confirm("Include numbers?")){
@@ -55,12 +57,30 @@ function getOptions(){
 // Generates a password with random characters
 function generatePassword(passwordLength,options){
   let password = "";
+  let optionIncluded = [];
+  for(let i = 0; i < options.length; i++){
+    optionIncluded.push(0);
+  }
   for (let x=0; x < passwordLength; x++){
-    //Generates a random character type option from the options array
-    let charType = Math.floor(Math.random()*options.length);
-    password += options[charType].getCharacter();
+    //If a character option has not been included ensure it is included
+    if(optionIncluded.length-optionIncluded.reduce(addThem)===passwordLength-x){
+      for(let k = 0; k < options.length;k++){
+        if(optionIncluded[k]===0){
+          password += options[k].getCharacter();
+        }
+      }
+    } else {
+      //Generates a random character type option from the options array
+      let charType = Math.floor(Math.random()*options.length);
+      password += options[charType].getCharacter();
+      optionIncluded[charType]=1;
+    }
   }
   return password
+}
+
+function addThem(total, num){
+  return total + num;
 }
 
 //Generates a random uppercase Latin character
@@ -80,9 +100,7 @@ function getNumber(){
 
 //Generates a random special character
 function getSpecial(){
-  let specailList = "!@#$%&*";
-  let special = specailList.charAt(Math.floor(Math.random()*specailList.length));
-  return special
+  return String.fromCharCode(Math.floor((Math.random()*16)+32))
 }
 
 // Add event listener to generate button

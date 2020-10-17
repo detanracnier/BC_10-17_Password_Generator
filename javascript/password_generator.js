@@ -3,10 +3,12 @@ let generateBtn = document.querySelector("#generate");
 let lengthInput = document.querySelector("#passwordLength");
 let upperCaseCB = document.querySelector("#upperCaseCB");
 let lowerCaseCB = document.querySelector("#lowerCaseCB");
-
+let numbersCB = document.querySelector("#numbersCB");
+let specialsCB = document.querySelector("#specialsCB");
 
 // Write password to the #password input
 function writePassword() {
+
   let passwordLength = document.querySelector("#passwordLength").value;
   let options = getOptions();
   let password = generatePassword(passwordLength,options);
@@ -36,12 +38,30 @@ function getOptions(){
 // Generates a password with random characters
 function generatePassword(passwordLength,options){
   let password = "";
+  let optionIncluded = [];
+  for(let i = 0; i < options.length; i++){
+    optionIncluded.push(0);
+  }
   for (let x=0; x < passwordLength; x++){
-    //Generates a random character type option from the options array
-    let charType = Math.floor(Math.random()*options.length);
-    password += options[charType].getCharacter();
+    //If a character option has not been included ensure it is included
+    if(optionIncluded.length-optionIncluded.reduce(addThem)===passwordLength-x){
+      for(let k = 0; k < options.length;k++){
+        if(optionIncluded[k]===0){
+          password += options[k].getCharacter();
+        }
+      }
+    } else {
+      //Generates a random character type option from the options array
+      let charType = Math.floor(Math.random()*options.length);
+      password += options[charType].getCharacter();
+      optionIncluded[charType]=1;
+    }
   }
   return password
+}
+
+function addThem(total, num){
+  return total + num;
 }
 
 //Generates a random uppercase Latin character
@@ -77,16 +97,34 @@ lengthInput.onchange = function () {
   }
 }
 
-//Adds event listener to ensure upper or lower case check box is always checked
 upperCaseCB.onchange = function () {
-  if (!this.checked){
-    lowerCaseCB.checked = true;
-  }
+  if (upperCaseCB.checked===true || lowerCaseCB.checked===true || numbersCB.checked===true || specialsCB.checked===true){
+      generateBtn.disabled=false;
+    } else {
+      generateBtn.disabled=true;
+    }
 }
 
-//Adds event listener to ensure upper or lower case check box is always checked
 lowerCaseCB.onchange = function () {
-  if (!this.checked){
-    upperCaseCB.checked = true;
-  }
+  if (upperCaseCB.checked===true || lowerCaseCB.checked===true || numbersCB.checked===true || specialsCB.checked===true){
+      generateBtn.disabled=false;
+    } else {
+      generateBtn.disabled=true;
+    }
+}
+
+numbersCB.onchange = function () {
+  if (upperCaseCB.checked===true || lowerCaseCB.checked===true || numbersCB.checked===true || specialsCB.checked===true){
+      generateBtn.disabled=false;
+    } else {
+      generateBtn.disabled=true;
+    }
+}
+
+specialsCB.onchange = function () {
+  if (upperCaseCB.checked===true || lowerCaseCB.checked===true || numbersCB.checked===true || specialsCB.checked===true){
+      generateBtn.disabled=false;
+    } else {
+      generateBtn.disabled=true;
+    }
 }
